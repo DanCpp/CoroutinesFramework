@@ -2,10 +2,19 @@
 #include "cooperative.h"
 #include "dynamic_array.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-DEFINE_ALL(int_array, int, 2)
+DEFINE_DYNAMIC_ARRAY(int_array, int, 2)
+DEFINE_DYNAMIC_ARRAY(long_array, size_t, 2)
+
+size_t factorial(size_t n) {
+  if (n <= 1)
+    return 1;
+  coopmult_sleep();
+  return n * factorial(n - 1);
+}
 
 int fibbonachi(int arg) {
   if (arg <= 1)
@@ -15,19 +24,19 @@ int fibbonachi(int arg) {
 }
 
 void sleeper_sort_task(void* arg) {
-  int value = *(int*) arg;
-  int max_depth = 1 + value;
-  fibbonachi(max_depth);
-  printf("%d\n", value);
+  size_t value = *(size_t*) arg;
+  size_t max_depth = 1 + value;
+  factorial(max_depth);
+  printf("%zu\n", value);
 }
 
 int main() {
-  int_array arr;
-  int_array_init(&arr);
-  int a = 0;
+  long_array arr;
+  long_array_init(&arr);
+  size_t a = 0;
   do {
-    scanf("%d", &a);
-    int_array_add_tail(&arr, a);
+    scanf("%zu", &a);
+    long_array_add_tail(&arr, a);
   } while (a);
 
   for (size_t i = 0; i < arr.size; i++) {
@@ -35,6 +44,6 @@ int main() {
   }
   coopmult_run();
 
-  int_array_deinit(&arr);
+  long_array_deinit(&arr);
   return 0;
 }
